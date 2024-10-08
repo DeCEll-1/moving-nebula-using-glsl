@@ -29,6 +29,7 @@ void main(void) { // https://youtu.be/db-qfZBhBe4
 
         // offset noise texture for movement
         vec2 offsetedCoordinate = uv;
+
         offsetedCoordinate.x += cos(iTime / (32. * i));
         offsetedCoordinate.y += sin(iTime / (32. * i));
 
