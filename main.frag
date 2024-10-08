@@ -1,12 +1,8 @@
-// Example by Mario Carrillo ( @marioecg )
-
 #ifdef GL_ES
 precision mediump float;
 #endif
 
-#include "lygia/generative/random.glsl"
 #include "lygia/color/blend/colorDodge.glsl"
-#include "lygia/generative/curl.glsl"
 
 #iChannel0 "file://perlinNoise.png"
 
@@ -31,8 +27,7 @@ void main(void) { // https://youtu.be/db-qfZBhBe4
     for (float i = -1.; i < 2.; i += 2.) {
         //#region highlight noise
 
-        // get noise
-
+        // offset noise texture for movement
         vec2 offsetedCoordinate = uv;
         offsetedCoordinate.x += cos(iTime / (32. * i));
         offsetedCoordinate.y += sin(iTime / (32. * i));
@@ -41,8 +36,6 @@ void main(void) { // https://youtu.be/db-qfZBhBe4
 
         // fine tune it
         highlightNoise.rgb = smoothstep(0.3, .75, highlightNoise.rgb) * .6;
-
-        // highlightNoise = fract(highlightNoise + iTime / 8.);
 
         highlightNoise.rgb += fract(highlightNoise).rgb * -fract(highlightNoise + iTime / 8.).rgb / 4.;
 
@@ -59,8 +52,6 @@ void main(void) { // https://youtu.be/db-qfZBhBe4
         // color setting (should use palette)
         colorNoise.rgb *= palette(i);
 
-        // col.rgb = colorNoise.rgb;
-
         //#endregion
 
         vec3 nebula = blendColorDodge(colorNoise.rgb, highlightNoise.rgb);
@@ -69,18 +60,10 @@ void main(void) { // https://youtu.be/db-qfZBhBe4
 
         maskNoise.rgb = smoothstep(0.25, 0.80, maskNoise).rgb;
 
-        // res.rgb = maskNoise.rgb;
-
-        // nebula.rgb *= maskNoise.rgb * 1.5;
-
         spaceBackgroundMain = mix(nebula, spaceBackgroundMain, .3).rgb;
-
-        // spaceBackgroundMain.rgb = (spaceBackgroundMain.rgb + merge.rgb) / 2.;
     }
 
     col.rgb = spaceBackgroundMain.rgb;
-
-    // col.rgb = curl(vec3(uv * 8., 1.)).rgb;
 
     gl_FragColor = col;
 }
